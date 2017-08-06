@@ -35,11 +35,11 @@
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_task_wdt.h"
+#include "esp_attr.h"
 #include "esp_deep_sleep.h"
+#include "nvs_flash.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
-
-#include "nvs_flash.h"
 
 #include "lwip/err.h"
 #include "lwip/sockets.h"
@@ -87,12 +87,6 @@ static unsigned char mqtt_sendBuf[MQTT_BUF_SIZE];
 static unsigned char mqtt_readBuf[MQTT_BUF_SIZE];
 
 static const char *TAG = "MQTTS";
-
-/* Variable holding number of times ESP32 restarted since first boot.
-* It is placed into RTC memory using RTC_DATA_ATTR and
-* maintains its value when ESP32 wakes from deep sleep.
-*/
-RTC_DATA_ATTR static int boot_count = 0;
 
 
 /* FreeRTOS event group to signal when we are connected & ready to make a request */
@@ -231,7 +225,7 @@ static void mqtt_task(void *pvParameters)
         }
 
         MQTTMessage message;
-        sprintf(msgbuf, "{\"boot\": %d,\"temperature\":%.2f, \"humidity\": %.2f }", boot_count, temperature, humidity);
+        sprintf(msgbuf, "{\"temperature\":%.2f, \"humidity\": %.2f }", temperature, humidity);
 
         ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
         message.qos = QOS0;
@@ -261,8 +255,6 @@ exit:
 
 void app_main()
 {
-    boot_count ++;
-
     nvs_flash_init();
     initialise_wifi();
 
