@@ -1,0 +1,59 @@
+menu "Example Configuration"
+
+config WIFI_SSID
+    string "WiFi SSID"
+	default "myssid"
+	help
+		SSID (network name) for the example to connect to.
+
+config WIFI_PASSWORD
+    string "WiFi Password"
+	default "myssid"
+	help
+		WiFi password (WPA or WPA2) for the example to use.
+
+		Can be left blank if the network has no security set.
+
+config MQTT_BROKER
+    string "MQTT Broker"
+    default "mqtt.iotcebu.com"
+    help
+        The mqtt broker to use
+
+config MQTT_USER
+    string "MQTT Username"
+    default "testuser"
+    help
+        The assigned MQTT Username
+
+config MQTT_PASSWORD
+    string "MQTT Password"
+    default "iotcebu.com"
+    help
+        The assigned password for the MQTT Username
+
+config MQTT_CLIENT_ID
+    string "MQTT Client ID"
+    default "esp32"
+    help
+        The assigned client ID
+
+config MQTT_WEBSOCKET_PORT
+    int "MQTT Websocket Port"
+    default 8083
+    help
+        The assigned websocket port for MQTT
+
+config LED_INDICATOR
+    int "IO Port for LED"
+    default 4
+    help
+        The LED indicator port to indicate MCU is alive
+
+config DEEP_SLEEP_INTERVAL
+    int "Deep sleep interval (in seconds)"
+    default 10
+    help
+        The number of seconds the MCU will spend in deep sleep
+
+endmenu
