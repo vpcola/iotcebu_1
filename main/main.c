@@ -222,23 +222,25 @@ static void mqtt_task(void *pvParameters)
 
             ESP_LOGI(TAG, "Temperature : %.1f", temperature);
             ESP_LOGI(TAG, "Humidity : %.1f", humidity);
+
+            // Publish if we are able to get data from the sensor
+            MQTTMessage message;
+            sprintf(msgbuf, "{\"temperature\":%.1f, \"humidity\": %.1f }", temperature, humidity);
+
+            ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
+            message.qos = QOS0;
+            message.retained = false;
+            message.dup = false;
+            message.payload = (void*)msgbuf;
+            message.payloadlen = strlen(msgbuf)+1;
+
+            ret = MQTTPublish(&client, "iotcebu/testuser/weather", &message);
+            if (ret != SUCCESS) {
+                ESP_LOGI(TAG, "MQTTPublish not SUCCESS: %d", ret);
+                goto exit;
+            }
         }
 
-        MQTTMessage message;
-        sprintf(msgbuf, "{\"temperature\":%.2f, \"humidity\": %.2f }", temperature, humidity);
-
-        ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
-        message.qos = QOS0;
-        message.retained = false;
-        message.dup = false;
-        message.payload = (void*)msgbuf;
-        message.payloadlen = strlen(msgbuf)+1;
-
-        ret = MQTTPublish(&client, "iotcebu/testuser/weather", &message);
-        if (ret != SUCCESS) {
-            ESP_LOGI(TAG, "MQTTPublish not SUCCESS: %d", ret);
-            goto exit;
-        }
     }
 exit:
     MQTTDisconnect(&client);
