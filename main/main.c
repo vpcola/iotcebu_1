@@ -75,7 +75,6 @@ const int CONNECTED_BIT = BIT0;
 #define MQTT_USER CONFIG_MQTT_USER
 #define MQTT_PASS CONFIG_MQTT_PASSWORD
 #define MQTT_PORT CONFIG_MQTT_WEBSOCKET_PORT
-#define MQTT_TOPIC "iotcebu/testuser/pwm/#"
 #define MQTT_CLIENTID CONFIG_MQTT_CLIENT_ID
 #define MQTT_WEBSOCKET 1  // 0=no 1=yes
 #define MQTT_BUF_SIZE 512
@@ -232,7 +231,7 @@ static void mqtt_task(void *pvParameters)
         }
 
         MQTTMessage message;
-        sprintf(msgbuf, "{\"temperature\":%.2f, \"humidity\": %.2f }", temperature, humidity);
+        sprintf(msgbuf, "{\"boot\": %d,\"temperature\":%.2f, \"humidity\": %.2f }", boot_count, temperature, humidity);
 
         ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
         message.qos = QOS0;
