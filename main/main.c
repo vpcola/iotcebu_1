@@ -249,7 +249,7 @@ exit:
     // Set the LED indicator to Off
     gpio_set_level(CONFIG_LED_INDICATOR, 0);
 
-    const int deep_sleep_sec = 10;
+    const int deep_sleep_sec = CONFIG_DEEP_SLEEP_INTERVAL;
     ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
     esp_deep_sleep(1000000LL * deep_sleep_sec);
 }
