@@ -211,7 +211,8 @@ static void mqtt_task(void *pvParameters)
     ESP_LOGI(TAG, "MQTT Connected!");
     char msgbuf[200];
     // Read the sensor and publish data to MQTT 
-    {
+    int i = 0;
+    do{
         ret = readDHT();
         if (ret != DHT_OK)
             errorHandler(ret);
@@ -222,26 +223,31 @@ static void mqtt_task(void *pvParameters)
 
             ESP_LOGI(TAG, "Temperature : %.1f", temperature);
             ESP_LOGI(TAG, "Humidity : %.1f", humidity);
-
-            // Publish if we are able to get data from the sensor
-            MQTTMessage message;
-            sprintf(msgbuf, "{\"temperature\":%.1f, \"humidity\": %.1f }", temperature, humidity);
-
-            ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
-            message.qos = QOS0;
-            message.retained = false;
-            message.dup = false;
-            message.payload = (void*)msgbuf;
-            message.payloadlen = strlen(msgbuf)+1;
-
-            ret = MQTTPublish(&client, "iotcebu/testuser/weather", &message);
-            if (ret != SUCCESS) {
-                ESP_LOGI(TAG, "MQTTPublish not SUCCESS: %d", ret);
-                goto exit;
-            }
+            break;
         }
+        i++;
+    }while((ret != DHT_OK) && (i < 5)); // Number of retries = 5
 
+    if (ret == DHT_OK)
+    {
+        // Publish if we are able to get data from the sensor
+        MQTTMessage message;
+        sprintf(msgbuf, "{\"temperature\":%.1f, \"humidity\": %.1f }", temperature, humidity);
+
+        ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
+        message.qos = QOS0;
+        message.retained = false;
+        message.dup = false;
+        message.payload = (void*)msgbuf;
+        message.payloadlen = strlen(msgbuf)+1;
+
+        ret = MQTTPublish(&client, "iotcebu/testuser/weather", &message);
+        if (ret != SUCCESS) {
+            ESP_LOGI(TAG, "MQTTPublish not SUCCESS: %d", ret);
+            goto exit;
+        }
     }
+
 exit:
     MQTTDisconnect(&client);
     NetworkDisconnect(&network);
