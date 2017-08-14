@@ -43,10 +43,15 @@ config MQTT_WEBSOCKET_PORT
     default 8083
     help
         The assigned websocket port for MQTT
+config SENSOR_PIN
+    int "IO port for sensor Pin"
+    default 4
+    help
+	The IO pin for the DHT22 sensor
 
 config LED_INDICATOR
     int "IO Port for LED"
-    default 4
+    default 16
     help
         The LED indicator port to indicate MCU is alive
 

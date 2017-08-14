@@ -79,7 +79,7 @@ const int CONNECTED_BIT = BIT0;
 #define MQTT_WEBSOCKET 1  // 0=no 1=yes
 #define MQTT_BUF_SIZE 512
 
-#define DHT22_IO  16 
+#define DHT22_IO  CONFIG_SENSOR_PIN
 
 xSemaphoreHandle print_mux;
 
