@@ -225,6 +225,8 @@ static void mqtt_task(void *pvParameters)
             ESP_LOGI(TAG, "Humidity : %.1f", humidity);
             break;
         }
+
+        vTaskDelay(300 / portTICK_PERIOD_MS);
         i++;
     }while((ret != DHT_OK) && (i < 5)); // Number of retries = 5
 
@@ -232,7 +234,7 @@ static void mqtt_task(void *pvParameters)
     {
         // Publish if we are able to get data from the sensor
         MQTTMessage message;
-        sprintf(msgbuf, "{\"temperature\":%.1f, \"humidity\": %.1f }", temperature, humidity);
+        sprintf(msgbuf, "{\"temperature\":%.1f,\"humidity\":%.1f}", temperature, humidity);
 
         ESP_LOGI(TAG, "MQTTPublish  ... %s",msgbuf);
         message.qos = QOS0;
